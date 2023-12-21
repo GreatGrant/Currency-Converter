@@ -33,14 +33,13 @@ class _HomePageState extends State<HomePage>{
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
                 "\$$_toDollarConversion",
                 style: Theme.of(context).textTheme.headlineLarge,
               ),
               const SizedBox(height: 20),
-              Text("The current rate is $_dollarRate"),
+              Text("The current rate is a dollar to ₦$_dollarRate"),
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: TextField(
