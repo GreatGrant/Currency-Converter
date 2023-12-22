@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Currency Converter',
       theme: ThemeData.light(useMaterial3: true).copyWith(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent)
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.purple)
       ),
       darkTheme: ThemeData.dark(useMaterial3: true).copyWith(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlueAccent)

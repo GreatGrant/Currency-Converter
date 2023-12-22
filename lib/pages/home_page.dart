@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:currency_converter/models/currency.dart';
 
-class HomePage extends StatefulWidget{
-  const HomePage({super.key, required this.title});
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -11,56 +12,139 @@ class HomePage extends StatefulWidget{
   }
 }
 
-class _HomePageState extends State<HomePage>{
- final int _dollarRate = 1250;
- final TextEditingController _nairaRateController = TextEditingController();
- late double _toDollarConversion = 0;
+class _HomePageState extends State<HomePage> {
+  final _currencies = Currency.getCurrencies();
+  final TextEditingController _amountController = TextEditingController();
+  late double _convertedAmount = 0.0;
 
+  late Currency selectedCurrency;
+  late Currency targetCurrency;
 
-  void convertCurrency(){
-    setState(() {
-      if(_nairaRateController.text.isNotEmpty){
-        _toDollarConversion = double.parse(_nairaRateController.text) / _dollarRate;
-      }else {
-        _toDollarConversion = 0;
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    selectedCurrency = _currencies[0];
+    targetCurrency = _currencies[1];
   }
 
   @override
   Widget build(BuildContext context) {
+
+    void convertCurrency() {
+      setState(() {
+        if (_amountController.text.isNotEmpty) {
+          _convertedAmount = Currency.convert(double.parse(_amountController.text), selectedCurrency.code, targetCurrency.code);
+        }
+      });
+    }
+
     return Scaffold(
-        body: Center(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              const Icon(
+                Icons.balance,
+                size: 100,
+                color: Colors.deepPurple,
+              ),
               Text(
-                "\$$_toDollarConversion",
-                style: Theme.of(context).textTheme.headlineLarge,
+                "Currency Converter",
+                textAlign: TextAlign.center,
+                style: Theme.of(context)
+                    .textTheme
+                    .displayLarge
+                    ?.copyWith(fontSize: 30),
               ),
               const SizedBox(height: 20),
-              Text("The current rate is a dollar to ₦$_dollarRate"),
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: TextField(
-                  controller: _nairaRateController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    labelText: "Enter price in ₦",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(4))
-                    )
+              TextField(
+                controller: _amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: "Enter amount",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4)),
                   ),
-                  onSubmitted: (String value){
-                    convertCurrency();
+                ),
+                onSubmitted: (String value) {
+                  convertCurrency();
+                },
+              ),
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  DropdownButton<Currency>(
+                    value: selectedCurrency,
+                    items: _currencies
+                        .map<DropdownMenuItem<Currency>>(
+                          (Currency currency) => DropdownMenuItem<Currency>(
+                        value: currency,
+                        child: Text("${currency.name} ${currency.code.name} ${currency.flag}"),
+                      ),
+                    ).toList(),
+                    onChanged: (Currency? value) {
+                      setState(() {
+                        selectedCurrency = value!;
+                      });
                     },
+                  ),
+                  DropdownButton<Currency>(
+                    value: targetCurrency,
+                    items: _currencies
+                        .map<DropdownMenuItem<Currency>>(
+                          (Currency currency) => DropdownMenuItem<Currency>(
+                        value: currency,
+                        child: Text("${currency.name} ${currency.code.name} ${currency.flag}"),
+                      ),
+                    ).toList(),
+                    onChanged: (Currency? value) {
+                      setState(() {
+                        targetCurrency = value!;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                height: 40,
+                child: ElevatedButton(
+                  onPressed: convertCurrency,
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
+                  ),
+                  child: const Text(
+                      "Convert",
+                    style: TextStyle(color: Colors.white),
+                  ),
+
                 ),
               ),
-              ElevatedButton(
-                  onPressed: convertCurrency,
-                  child: const Text("Convert to dollar")
-              )
-              ],
+              const SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Container(
+                  height: 50,
+                  width: double.infinity,
+                  color: Colors.grey,
+                  child: Center(
+                      child: Text(
+                        "$_convertedAmount ${targetCurrency.code.name}",
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold
+                      ),
+                      )
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
