@@ -19,6 +19,8 @@ class _HomePageState extends State<HomePage> {
 
   late Currency selectedCurrency;
   late Currency targetCurrency;
+  bool _amountValidationError = false;
+
 
   @override
   void initState() {
@@ -33,7 +35,14 @@ class _HomePageState extends State<HomePage> {
     void convertCurrency() {
       setState(() {
         if (_amountController.text.isNotEmpty) {
-          _convertedAmount = Currency.convert(double.parse(_amountController.text), selectedCurrency.code, targetCurrency.code);
+          _convertedAmount = Currency.convert(
+              double.parse(_amountController.text),
+              selectedCurrency.code,
+              targetCurrency.code
+          );
+          _amountValidationError = false;
+        }else{
+          _amountValidationError = true;
         }
       });
     }
@@ -46,7 +55,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(8),
+          padding: const EdgeInsets.all(12),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -56,21 +65,15 @@ class _HomePageState extends State<HomePage> {
                 size: 100,
                 color: Colors.deepPurple,
               ),
-              Text(
-                "",
-                textAlign: TextAlign.center,
-                style: Theme.of(context)
-                    .textTheme
-                    .displayLarge
-                    ?.copyWith(fontSize: 30),
-              ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 50),
               TextField(
                 controller: _amountController,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Enter amount",
-                  border: OutlineInputBorder(
+                  error:
+                  Text(_amountValidationError ? "Please enter a valid amount": ""),
+                  border: const OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(4)),
                   ),
                 ),
@@ -78,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                   convertCurrency();
                 },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 4),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -139,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.grey,
                   child: Center(
                       child: Text(
-                        "$_convertedAmount ${targetCurrency.code.name}",
+                        "${_amountController.text} ${selectedCurrency.code.name} = $_convertedAmount ${targetCurrency.code.name}",
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                         color: Colors.black,
                         fontWeight: FontWeight.bold
