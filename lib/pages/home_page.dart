@@ -39,6 +39,11 @@ class _HomePageState extends State<HomePage> {
     }
 
     return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+            "Currency Converter",
+        ),
+      ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8),
@@ -52,7 +57,7 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.deepPurple,
               ),
               Text(
-                "Currency Converter",
+                "",
                 textAlign: TextAlign.center,
                 style: Theme.of(context)
                     .textTheme
