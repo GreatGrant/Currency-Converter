@@ -70,7 +70,8 @@ class _HomePageState extends State<HomePage> {
                 controller: _amountController,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
-                  labelText: "Enter amount",
+                  prefixIcon: const Icon(Icons.transfer_within_a_station),
+                  hintText: "Enter amount",
                   error:
                   Text(_amountValidationError ? "Please enter a valid amount": ""),
                   border: const OutlineInputBorder(
