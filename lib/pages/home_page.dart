@@ -1,6 +1,122 @@
 import 'package:flutter/material.dart';
 import 'package:currency_converter/models/currency.dart';
 
+class CurrencyInput extends StatelessWidget {
+  final TextEditingController controller;
+  final bool hasError;
+  final Function(String) onSubmitted;
+
+  const CurrencyInput({super.key, required this.controller, required this.hasError, required this.onSubmitted});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        prefixIcon: const Icon(Icons.transfer_within_a_station),
+        labelText: "Enter amount",
+        error: Text(hasError ? "Please enter a valid amount" : ""),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderRadius: BorderRadius.all(Radius.circular(4)),
+        ),
+        focusColor: Colors.deepPurpleAccent,
+        errorBorder: const OutlineInputBorder(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            borderSide: BorderSide(color: Colors.red)),
+      ),
+      onSubmitted: onSubmitted,
+    );
+  }
+}
+
+class CurrencyDropdown extends StatelessWidget {
+  final List<Currency> currencies;
+  final Currency selectedCurrency;
+  final Function(Currency?) onChanged;
+
+  const CurrencyDropdown({super.key, required this.currencies, required this.selectedCurrency, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    return DropdownButton<Currency>(
+      value: selectedCurrency,
+      items: currencies
+          .map<DropdownMenuItem<Currency>>(
+            (Currency currency) => DropdownMenuItem<Currency>(
+          value: currency,
+          child: Text("${currency.name} ${currency.code.name} ${currency.flag}"),
+        ),
+      )
+          .toList(),
+      onChanged: onChanged,
+    );
+  }
+}
+
+class ConversionResult extends StatelessWidget {
+  final String amount;
+  final double convertedAmount;
+  final Currency selectedCurrency;
+  final Currency targetCurrency;
+
+  const ConversionResult(
+      {
+        super.key, required this.amount,
+        required this.convertedAmount,
+        required this.selectedCurrency,
+        required this.targetCurrency
+      });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Container(
+        height: 50,
+        width: double.infinity,
+        color: Colors.grey,
+        child: Center(
+          child: Text(
+            "$amount ${selectedCurrency.code.name} = $convertedAmount ${targetCurrency.code.name}",
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class CurrencyConverterButton extends StatelessWidget {
+  final VoidCallback onPressed;
+
+  const CurrencyConverterButton({super.key, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 40,
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
+        ),
+        child: const Text(
+          "Convert",
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+}
+
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
 
@@ -21,7 +137,6 @@ class _HomePageState extends State<HomePage> {
   late Currency targetCurrency;
   bool _amountValidationError = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -29,28 +144,24 @@ class _HomePageState extends State<HomePage> {
     targetCurrency = _currencies[1];
   }
 
+  void convertCurrency() {
+    setState(() {
+      if (_amountController.text.isNotEmpty) {
+        _convertedAmount = Currency.convert(
+            double.parse(_amountController.text), selectedCurrency.code, targetCurrency.code);
+        _amountValidationError = false;
+      } else {
+        _amountValidationError = true;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-
-    void convertCurrency() {
-      setState(() {
-        if (_amountController.text.isNotEmpty) {
-          _convertedAmount = Currency.convert(
-              double.parse(_amountController.text),
-              selectedCurrency.code,
-              targetCurrency.code
-          );
-          _amountValidationError = false;
-        }else{
-          _amountValidationError = true;
-        }
-      });
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-            "Currency Converter",
+          "Currency Converter",
         ),
       ),
       body: Center(
@@ -66,18 +177,9 @@ class _HomePageState extends State<HomePage> {
                 color: Colors.deepPurple,
               ),
               const SizedBox(height: 50),
-              TextField(
+              CurrencyInput(
                 controller: _amountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.transfer_within_a_station),
-                  hintText: "Enter amount",
-                  error:
-                  Text(_amountValidationError ? "Please enter a valid amount": ""),
-                  border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4)),
-                  ),
-                ),
+                hasError: _amountValidationError,
                 onSubmitted: (String value) {
                   convertCurrency();
                 },
@@ -86,30 +188,18 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  DropdownButton<Currency>(
-                    value: selectedCurrency,
-                    items: _currencies
-                        .map<DropdownMenuItem<Currency>>(
-                          (Currency currency) => DropdownMenuItem<Currency>(
-                        value: currency,
-                        child: Text("${currency.name} ${currency.code.name} ${currency.flag}"),
-                      ),
-                    ).toList(),
+                  CurrencyDropdown(
+                    currencies: _currencies,
+                    selectedCurrency: selectedCurrency,
                     onChanged: (Currency? value) {
                       setState(() {
                         selectedCurrency = value!;
                       });
                     },
                   ),
-                  DropdownButton<Currency>(
-                    value: targetCurrency,
-                    items: _currencies
-                        .map<DropdownMenuItem<Currency>>(
-                          (Currency currency) => DropdownMenuItem<Currency>(
-                        value: currency,
-                        child: Text("${currency.name} ${currency.code.name} ${currency.flag}"),
-                      ),
-                    ).toList(),
+                  CurrencyDropdown(
+                    currencies: _currencies,
+                    selectedCurrency: targetCurrency,
                     onChanged: (Currency? value) {
                       setState(() {
                         targetCurrency = value!;
@@ -119,38 +209,15 @@ class _HomePageState extends State<HomePage> {
                 ],
               ),
               const SizedBox(height: 8),
-              SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: ElevatedButton(
-                  onPressed: convertCurrency,
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
-                  ),
-                  child: const Text(
-                      "Convert",
-                    style: TextStyle(color: Colors.white),
-                  ),
-
-                ),
+              CurrencyConverterButton(
+                onPressed: convertCurrency,
               ),
               const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.all(8),
-                child: Container(
-                  height: 50,
-                  width: double.infinity,
-                  color: Colors.grey,
-                  child: Center(
-                      child: Text(
-                        "${_amountController.text} ${selectedCurrency.code.name} = $_convertedAmount ${targetCurrency.code.name}",
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold
-                      ),
-                      )
-                  ),
-                ),
+              ConversionResult(
+                amount: _amountController.text,
+                convertedAmount: _convertedAmount,
+                selectedCurrency: selectedCurrency,
+                targetCurrency: targetCurrency,
               ),
             ],
           ),
