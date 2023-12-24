@@ -48,7 +48,7 @@ class CurrencyDropdown extends StatelessWidget {
           .map<DropdownMenuItem<Currency>>(
             (Currency currency) => DropdownMenuItem<Currency>(
           value: currency,
-          child: Text("${currency.name} ${currency.code.name} ${currency.flag}"),
+          child: Text("${currency.code.name} ${currency.flag}"),
         ),
       )
           .toList(),
@@ -156,6 +156,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void swapCurrencies(){
+    setState(() {
+      final temp = selectedCurrency;
+      selectedCurrency = targetCurrency;
+      targetCurrency = temp;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -193,16 +201,30 @@ class _HomePageState extends State<HomePage> {
                     selectedCurrency: selectedCurrency,
                     onChanged: (Currency? value) {
                       setState(() {
-                        selectedCurrency = value!;
+                        if(value == targetCurrency){
+                          swapCurrencies();
+                        }else{
+                          selectedCurrency = value!;
+                        }
+
                       });
                     },
+                  ),
+                  IconButton(
+                      onPressed: swapCurrencies,
+                      icon: const Icon(Icons.swap_horiz)
                   ),
                   CurrencyDropdown(
                     currencies: _currencies,
                     selectedCurrency: targetCurrency,
                     onChanged: (Currency? value) {
                       setState(() {
-                        targetCurrency = value!;
+                        if(value == selectedCurrency){
+                          swapCurrencies();
+                        }else{
+                          targetCurrency = value!;
+                        }
+
                       });
                     },
                   ),
