@@ -100,19 +100,14 @@ class CurrencyConverterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 40,
-      child: ElevatedButton(
+    return ElevatedButton(
         onPressed: onPressed,
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.deepPurple),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.deepPurple,
+          foregroundColor:  Colors.white,
+          minimumSize: const Size(double.infinity, 40),
         ),
-        child: const Text(
-          "Convert",
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+        child:  const Text("Convert")
     );
   }
 }
