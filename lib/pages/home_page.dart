@@ -229,7 +229,7 @@ class _HomePageState extends State<HomePage> {
               CurrencyConverterButton(
                 onPressed: convertCurrency,
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 4),
               ConversionResult(
                 amount: _amountController.text,
                 convertedAmount: _convertedAmount,
