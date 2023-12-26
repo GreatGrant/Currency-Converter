@@ -13,27 +13,14 @@ The Flutter Currency Converter App allows users to convert amounts between diffe
 - **Currency Swapping:** Quickly swaps source and target currencies for convenience.
 - **Input Validation:** Ensures valid input for accurate currency conversion.
 
-## Screenshots
-
-![Screenshot 1](screenshots/screenshot1.png)
-*Description of the screenshot.*
-
-![Screenshot 2](screenshots/screenshot2.png)
-*Description of the screenshot.*
-
 ## Getting Started
 
 To run this Flutter app locally, follow these steps:
 
 1. Ensure you have Flutter installed. If not, [install Flutter](https://flutter.dev/docs/get-started/install).
-2. Clone this repository: `git clone https://github.com/GreatGrant/currency-converter.git`
-3. Navigate to the project directory: `cd currency-converter`
+2. Clone this repository: `git clone https://github.com/GreatGrant/Currency-Converter.git` 
+3. Navigate to the project directory: `cd Currency-Converter`
 4. Run the app: `flutter run`
-
-## Dependencies
-
-- [Flutter](https://flutter.dev/)
-- Add any additional dependencies here, such as currency conversion libraries, etc.
 
 ## Built for Practice
 
