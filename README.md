@@ -1,16 +1,45 @@
-# currency_converter
+# Flutter Currency Converter App
 
-A new Flutter project.
+A simple currency converter app built with Flutter.
+
+## Overview
+
+The Flutter Currency Converter App allows users to convert amounts between different currencies. It provides a user-friendly interface with input for the amount to convert, dropdowns for selecting source and target currencies, and a button to perform the conversion.
+
+## Features
+
+- **Currency Conversion:** Convert amounts from one currency to another.
+- **User-Friendly Interface:** Clean and intuitive design for a seamless user experience.
+- **Currency Swapping:** Quickly swaps source and target currencies for convenience.
+- **Input Validation:** Ensures valid input for accurate currency conversion.
+
+## Screenshots
+
+![Screenshot 1](screenshots/screenshot1.png)
+*Description of the screenshot.*
+
+![Screenshot 2](screenshots/screenshot2.png)
+*Description of the screenshot.*
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To run this Flutter app locally, follow these steps:
 
-A few resources to get you started if this is your first Flutter project:
+1. Ensure you have Flutter installed. If not, [install Flutter](https://flutter.dev/docs/get-started/install).
+2. Clone this repository: `git clone https://github.com/GreatGrant/currency-converter.git`
+3. Navigate to the project directory: `cd currency-converter`
+4. Run the app: `flutter run`
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Dependencies
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- [Flutter](https://flutter.dev/)
+- Add any additional dependencies here, such as currency conversion libraries, etc.
+
+## Built for Practice
+
+This app was built to practice fundamental concepts in Flutter, including:
+
+- **State Management:** Managing and updating the state of the app.
+- **Widget Composition:** Creating reusable and compositional Flutter widgets.
+- **User Interface Design:** Implementing a clean and intuitive UI.
+- **Fetcging and manipulating data:** Manipulating dummy data and displaying in the UI
